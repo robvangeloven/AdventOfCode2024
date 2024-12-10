@@ -10,9 +10,9 @@ void PartOne()
         {
             var fileId = index / 2;
 
-            var result = Enumerable
+            return Enumerable
                .Range(0, int.Parse($"{c}"))
-               .Select(x =>
+               .Select(_ =>
                {
                    if (index % 2 == 0)
                    {
@@ -23,8 +23,6 @@ void PartOne()
                    emptyNodes++;
                    return (int?)null;
                });
-
-            return result;
 
         })
         .ToArray()
@@ -38,7 +36,40 @@ void PartOne()
 
 void PartTwo()
 {
-    var answer = 0;
+    var answer = 0L;
+
+    var emptyNodes = 0;
+    var stack = new Stack<int>();
+
+    answer = File
+        .ReadAllText("input.txt")
+        .SelectMany((c, index) =>
+        {
+            var fileId = index / 2;
+
+            return Enumerable
+                .Range(0, int.Parse($"{c}"))
+                .Select(x =>
+                {
+                    if (index % 2 == 0)
+                    {
+                        stack.Push(fileId);
+                        return fileId;
+                    }
+
+                    emptyNodes++;
+                    return (int?)null;
+                });
+
+        })
+        .ToArray()
+        .Select(node =>
+        {
+            return node ?? stack.Pop();
+        })
+        .Take(..^emptyNodes)
+        .Select((value, index) => index * (long)value)
+        .Sum();
 
     Console.WriteLine($"Answer part two: {answer}");
 }
